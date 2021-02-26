@@ -1,0 +1,1 @@
+﻿INSERT INTO RENTA(ID,BranID,ColorId,ModelYear,DailyPrice,Descriptions) Values('','HONDA','BLUE',1909,350,'POOR CAR')
