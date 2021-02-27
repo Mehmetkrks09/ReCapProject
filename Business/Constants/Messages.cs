@@ -19,8 +19,8 @@ namespace Business.Constants
         public static string  CarListed = "Arabalar Listelendi";
         public static string MaintenanceTime = "sistem Bakımda";
         public static string BrandAdded ="Marka Eklendi";
-       
-
+        public static string CarCountOfBrandError="Kategori maks seviyede";
+        public static string CarNameAlreadyExists="Bu İsimde Başka bir Araba Var" ;
     }
 
 

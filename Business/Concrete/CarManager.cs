@@ -10,6 +10,7 @@ using Entities.Concrete;
 using Entities.DTOs;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Business.Concrete
@@ -25,13 +26,15 @@ namespace Business.Concrete
         [ValidationAspect(typeof(CarValidator))]
         public IResult Add(Car car)
         {
-            ValidationTool.Validate(new CarValidator(), car);
-            if (car.DailyPrice == 2)
+            if (CheckIfCarCountOfBrandCorrect(car.BrandId).Succes && CheckIfCarNameExists(car.Id).Succes)
             {
-                return new ErrorResult(Messages.CarNameInvalıd);
+
+                _carDal.Add(car);
+                return new SuccesResult(Messages.CarAdded);
             }
-            _carDal.Add(car);
-            return new SuccesResult(Messages.CarAdded);
+            return new SuccesResult();
+
+
         }
 
         public void Delete(Car car)
@@ -65,7 +68,7 @@ namespace Business.Concrete
         }
 
 
-        
+
 
         public void Update(Car car)
         {
@@ -75,7 +78,30 @@ namespace Business.Concrete
         public IDataResult<List<CarDetailDto>> GetCarDetails()
         {
             return new SuccesDataResult<List<CarDetailDto>>(_carDal.GetCarDetails());
-           
+
+        }
+        private IResult CheckIfCarCountOfBrandCorrect(int BrandId)
+        {
+            var result = _carDal.GetAll(p => p.BrandId == BrandId).Count;
+            if (result >= 10)
+            {
+                return new ErrorResult(Messages.CarCountOfBrandError);
+
+            }
+            return new SuccesResult();
+        }
+        private IResult CheckIfCarNameExists(int Id)
+        {
+            var result = _carDal.GetAll(c => c.Id == Id).Any();
+            if (result )
+            {
+                return new ErrorResult(Messages.CarNameAlreadyExists);
+            }
+            return new SuccesResult();
+
+
+
+
         }
     }
 }
