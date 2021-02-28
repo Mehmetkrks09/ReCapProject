@@ -3,6 +3,7 @@ using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
+using Core.Utilities.Business;
 using Core.Utilities.Result;
 using Core.Utilities.Results;
 using DataAccess.Abstracts;
@@ -18,22 +19,24 @@ namespace Business.Concrete
     public class CarManager : ICarService
     {
         ICarDal _carDal;
+        IBrandService _brandService;
 
-        public CarManager(ICarDal carDal)
+        public CarManager(ICarDal carDal,
+IBrandService brandService)
         {
             _carDal = carDal;
+            _brandService = brandService;
         }
         [ValidationAspect(typeof(CarValidator))]
         public IResult Add(Car car)
         {
-            if (CheckIfCarCountOfBrandCorrect(car.BrandId).Succes && CheckIfCarNameExists(car.Id).Succes)
+            IResult result = BusinessRules.Run(CheckIfCarCountOfBrandCorrect(car.BrandId), CheckIfCarNameExists(car.Id), CheckIfBrandLimitExcided());
+            if (result != null)
             {
-
-                _carDal.Add(car);
-                return new SuccesResult(Messages.CarAdded);
+                return result;
             }
-            return new SuccesResult();
-
+            _carDal.Add(car);
+            return new SuccesResult(Messages.CarAdded);
 
         }
 
@@ -93,7 +96,7 @@ namespace Business.Concrete
         private IResult CheckIfCarNameExists(int Id)
         {
             var result = _carDal.GetAll(c => c.Id == Id).Any();
-            if (result )
+            if (result)
             {
                 return new ErrorResult(Messages.CarNameAlreadyExists);
             }
@@ -101,6 +104,19 @@ namespace Business.Concrete
 
 
 
+
+
+        }
+
+
+        private IResult CheckIfBrandLimitExcided()
+        {
+            var result = _brandService.GetAll();
+            if (result.Data.Count > 15)
+            {
+                return new ErrorResult(Messages.CheckIfBrandLimitExcided);
+            }
+            return new SuccesResult();
 
         }
     }

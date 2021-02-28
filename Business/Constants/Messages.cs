@@ -21,6 +21,7 @@ namespace Business.Constants
         public static string BrandAdded ="Marka Eklendi";
         public static string CarCountOfBrandError="Kategori maks seviyede";
         public static string CarNameAlreadyExists="Bu İsimde Başka bir Araba Var" ;
+        public static string CheckIfBrandLimitExcided="Marka limiti Aşıldı Yeni bir Marka Ekelenemiyor";
     }
 
 

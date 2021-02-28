@@ -6,6 +6,7 @@ using DataAccess.Abstracts;
 using Entities.Concrete;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Business.Concrete
@@ -26,7 +27,7 @@ namespace Business.Concrete
             {
                 _brandDal.Add(brand);
                 return new SuccesResult(Messages.BrandAdded);
-               
+
             }
             else
             {
@@ -45,8 +46,8 @@ namespace Business.Concrete
         {
 
 
-         
-            
+
+
 
             return new SuccesDataResult<List<Brand>>(_brandDal.GetAll(), Messages.BrandGetAll);
         }
@@ -59,7 +60,19 @@ namespace Business.Concrete
 
         public void Update(Brand brand)
         {
+
             Console.WriteLine("Brand is Has been Updated");
         }
+        private IResult CheckIfBrandLimit(int Id)
+        {
+            var result = _brandDal.GetAll(c => c.BrandId == Id).Count();
+            if (result > 15)
+            {
+                return new ErrorResult(Messages.CarNameAlreadyExists);
+            }
+            return new SuccesResult();
+
+        }
+      
     }
 }

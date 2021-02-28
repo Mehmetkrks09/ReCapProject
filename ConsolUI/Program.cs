@@ -14,7 +14,7 @@ namespace ConsolUI
         static void Main(string[] args)
         {
             context context = new context();
-            CarManager carManager = new CarManager(new EfCarDal());
+            //CarManager carManager = new CarManager(new EfCarDal() ,new BrandManager(new EfBrandDal()));
             BrandManager brandManager = new BrandManager(new EfBrandDal());
             ColorManager colorManager = new ColorManager(new EfColorDal());
             RentalsManager rentalsManager = new RentalsManager(new EfRentalsDal());
